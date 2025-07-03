@@ -150,7 +150,7 @@ class SmartPricingApp {
     private readonly laborTableBody: HTMLTableSectionElement;
 
     constructor() {
-        this.ai = new GoogleGenAI({ apiKey: import.meta.env.API_KEY });
+        this.ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
         this.db = new PricingDatabase();
 
         // --- Element Selections ---
