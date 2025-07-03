@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Giá Thành Thông Minh</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <main id="app">
+        <header class="app-header">
+            <h1>Tính Giá Thành Thông Minh ⚙️</h1>
+            <p>Chọn các thông số cơ bản và mô tả các yêu cầu khác, AI sẽ giúp bạn tính toán giá thành sản xuất.</p>
+        </header>
+
+        <div class="settings-toggle-container">
+            <button id="toggle-settings-btn" class="btn-secondary">⚙️ Quản Lý Vật Tư & Đơn Giá</button>
+        </div>
+
+        <div id="settings-panel" class="settings-panel" style="display: none;">
+            <h2>Cơ sở dữ liệu Vật tư & Đơn giá</h2>
+            <p>Thêm các vật tư, phụ kiện và đơn giá của bạn. Dữ liệu sẽ được lưu trên trình duyệt.</p>
+            
+            <div class="db-section">
+                <h3>Vật Liệu</h3>
+                <form id="add-material-form" class="db-form">
+                    <input type="text" id="material-name" placeholder="Tên vật liệu (vd: Gỗ MDF An Cường)" required>
+                    <input type="text" id="material-unit" placeholder="Đơn vị (vd: tấm)" required>
+                    <input type="number" id="material-price" placeholder="Đơn giá (VND)" required>
+                    <button type="submit">Thêm Vật Liệu</button>
+                </form>
+                <table class="db-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Vật Liệu</th>
+                            <th>Đơn Vị</th>
+                            <th>Đơn Giá (VND)</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materials-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="db-section">
+                <h3>Phụ Kiện</h3>
+                <form id="add-accessory-form" class="db-form">
+                    <input type="text" id="accessory-name" placeholder="Tên phụ kiện (vd: Bản lề Hafele)" required>
+                    <input type="text" id="accessory-unit" placeholder="Đơn vị (vd: bộ)" required>
+                    <input type="number" id="accessory-price" placeholder="Đơn giá (VND)" required>
+                    <button type="submit">Thêm Phụ Kiện</button>
+                </form>
+                <table class="db-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Phụ Kiện</th>
+                            <th>Đơn Vị</th>
+                            <th>Đơn Giá (VND)</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accessories-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="db-section">
+                <h3>Nhân Công & Gia Công</h3>
+                <form id="add-labor-form" class="db-form">
+                    <input type="text" id="labor-name" placeholder="Tên công việc (vd: Cắt CNC)" required>
+                    <input type="text" id="labor-unit" placeholder="Đơn vị (vd: giờ)" required>
+                    <input type="number" id="labor-price" placeholder="Đơn giá (VND)" required>
+                    <button type="submit">Thêm Nhân Công</button>
+                </form>
+                <table class="db-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Công Việc</th>
+                            <th>Đơn Vị</th>
+                            <th>Đơn Giá (VND)</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="labor-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <fieldset class="structured-form">
+                <legend>Thông số cơ bản</legend>
+                
+                <div class="form-group dimensions-group">
+                    <label>Kích thước (m):</label>
+                    <input type="number" id="dim-width" placeholder="Rộng">
+                    <input type="number" id="dim-height" placeholder="Cao">
+                    <input type="number" id="dim-depth" placeholder="Sâu">
+                </div>
+
+                <div class="form-group">
+                    <label>Kiểu tủ bếp:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="cabinet-type" value="Chữ I"> Chữ I</label>
+                        <label><input type="checkbox" name="cabinet-type" value="Chữ L"> Chữ L</label>
+                        <label><input type="checkbox" name="cabinet-type" value="Chữ U"> Chữ U</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="material-selection">Chọn vật liệu (Giữ Ctrl/Cmd để chọn nhiều):</label>
+                    <select id="material-selection" class="multiselect-listbox" multiple></select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="accessory-selection">Chọn phụ kiện (Giữ Ctrl/Cmd để chọn nhiều):</label>
+                    <select id="accessory-selection" class="multiselect-listbox" multiple></select>
+                </div>
+
+            </fieldset>
+
+            <label for="product-description">Yêu cầu bổ sung</label>
+            <textarea id="product-description" rows="5" placeholder="Ví dụ: Cánh tủ không đường line, hậu tủ bằng Aluminium, thêm 3 ngăn kéo..."></textarea>
+            
+            <button id="calculate-btn">
+                <span class="btn-text">Phân Tích & Tính Giá Thành</span>
+                <span class="spinner" style="display: none;"></span>
+            </button>
+        </div>
+
+        <div id="result-container" class="result-section" aria-live="polite" style="display: none;">
+            <div id="loading-message" style="display: none;">
+                <p>AI đang phân tích và tính toán, vui lòng đợi trong giây lát...</p>
+            </div>
+            <pre id="error-message" class="error" style="display: none;"></pre>
+            
+            <div id="quote-output">
+                <h2 id="quote-product-name">Chi Tiết Giá Thành</h2>
+                
+                <div class="quote-section">
+                    <h3>Chi Phí Vật Liệu</h3>
+                    <table class="quote-table">
+                        <thead>
+                            <tr>
+                                <th>Tên Vật Liệu</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Vị</th>
+                                <th>Đơn Giá</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quote-materials-body"></tbody>
+                    </table>
+                </div>
+                
+                <div class="quote-section">
+                    <h3>Chi Phí Phụ Kiện</h3>
+                    <table class="quote-table">
+                        <thead>
+                            <tr>
+                                <th>Tên Phụ Kiện</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Vị</th>
+                                <th>Đơn Giá</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quote-accessories-body"></tbody>
+                    </table>
+                </div>
+
+                 <div class="quote-section">
+                    <h3>Chi Phí Nhân Công</h3>
+                    <table class="quote-table">
+                        <thead>
+                            <tr>
+                                <th>Tên Công Việc</th>
+                                <th>Số Lượng</th>
+                                <th>Đơn Vị</th>
+                                <th>Đơn Giá</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quote-labor-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="quote-summary">
+                    <div class="summary-item">
+                        <span>Tổng chi phí vật liệu:</span>
+                        <strong id="summary-materials-total">0 VND</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Tổng chi phí phụ kiện:</span>
+                        <strong id="summary-accessories-total">0 VND</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Tổng chi phí nhân công:</span>
+                        <strong id="summary-labor-total">0 VND</strong>
+                    </div>
+                    <div class="summary-item production-total">
+                        <span>TỔNG CHI PHÍ SẢN XUẤT:</span>
+                        <strong id="summary-production-total">0 VND</strong>
+                    </div>
+                </div>
+            </div>
+
+            <details class="json-details">
+                <summary>Xem dữ liệu JSON từ AI</summary>
+                <pre><code id="json-output"></code></pre>
+            </details>
+        </div>
+    </main>
+	<script type="module" src="/src/index.tsx"></script>
+    <script type="module" src="index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

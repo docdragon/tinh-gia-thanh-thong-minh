@@ -1,0 +1,5 @@
+{
+  "name": "Tính Giá Thành Thông Minh",
+  "description": "Ứng dụng tính giá thành sản phẩm nội thất và quảng cáo bằng ngôn ngữ tự nhiên, sử dụng Gemini AI.",
+  "requestFramePermissions": []
+}
